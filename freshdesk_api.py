@@ -2,6 +2,11 @@ import json
 import urlparse
 import requests
 
+
+# Freshdesk uses some exotic return codes
+
+HTTP_ALREADY_EXISTS = 422
+
 class FreshDeskObjects(object):
     """ Abstract class to wrap a type of freshdesk resource.
     """
@@ -23,7 +28,7 @@ class FreshDeskObjects(object):
 
     def update(self, id, **kwargs):
         return self.client.req(
-            requests.put, self.api_endpoint(id), self.wrapper_name
+            requests.put, self.api_endpoint(id), self.wrapper_name,
             **kwargs)
 
     def delete(self, id):
@@ -53,8 +58,26 @@ class FreshDeskContacts(FreshDeskObjects):
     VERIFIED   = 'verified'
     UNVERIFIED = 'unverified'
 
-    def create(self, name, email):
-        super(FreshDeskContacts, self).create(name=name, email=email)
+    def create(self, name, email, **kwargs):
+        super(FreshDeskContacts, self).create(name=name, email=email, **kwargs)
+
+    def create_or_enable(self, name, email, **kwargs):
+        """ If creation fails because user exists in deleted state, restore it.
+
+        Freshdesk do not allow two users with same email, even if the collision
+        is with a deleted user.
+        """
+        try:
+            return self.create(name=name, email=email)
+        except FreshDeskClient.APIError as e:
+            contacts = self.get_list(
+                state='deleted', query='email is {}'.format(email))
+            if ((len(contacts) > 0) and
+                (e.resp.status_code == HTTP_ALREADY_EXISTS)):
+                return self.update(contacts[0]['id'], name=name, deleted=False,
+                                   **kwargs)
+            else:
+                raise
 
 
 class FreshDeskCustomers(FreshDeskObjects):
@@ -63,8 +86,8 @@ class FreshDeskCustomers(FreshDeskObjects):
     api_name = 'customer'
     wrapper_name = api_name
 
-    def create(self, name):
-        super(FreshDeskContacts, self).create(name=name)
+    def create(self, name, **kwargs):
+        super(FreshDeskContacts, self).create(name=name, **kwargs)
 
 
 class FreshDeskClient(object):
@@ -114,12 +137,12 @@ class FreshDeskClient(object):
             **req_attrs)
         self.last_resp = resp
         if resp.ok:
-            parsed = resp.json()
-            if func == requests.delete:
-                return parsed
+            # for those two types of requests, the output is empty
+            if func in (requests.delete, requests.put):
+                return resp.text
             else:
                 # Just unwrap {'res_type': {...}} -> {...}
-                return [i[resource_type] for i in parsed]
+                return [i[resource_type] for i in resp.json()]
 
         else:
             raise self.APIError(resp)
