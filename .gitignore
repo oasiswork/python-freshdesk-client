@@ -3,7 +3,7 @@ MANIFEST
 *.pyo
 cache/
 dist/
-doc/_build
+build
 *.egg-info
 log.log
 *.mo
