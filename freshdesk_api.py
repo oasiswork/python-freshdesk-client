@@ -17,30 +17,35 @@ class FreshDeskObjects(object):
     # CRUD methods
 
     def create(self, **kwargs):
-        return client.req(requests.post, self.api_endpoint(), self.api_name,
-                          **kwargs)
+        return self.client.req(
+            requests.post, self.api_endpoint(), self.wrapper_name,
+            **kwargs)
 
     def update(self, id, **kwargs):
-        return self.client.req(requests.put, self.api_endpoint(id), self.api_name
-                               **kwargs)
+        return self.client.req(
+            requests.put, self.api_endpoint(id), self.wrapper_name
+            **kwargs)
 
     def delete(self, id):
         return self.client.req(
-            requests.delete, self.api_endpoint(id), self.api_name)
+            requests.delete, self.api_endpoint(id), self.wrapper_name)
 
     def get(self, id):
         return self.client.req(
-            requests.get, self.api_endpoint(id), self.api_name, id=id)
+            requests.get, self.api_endpoint(id), self.wrapper_name,
+            id=id)
 
     def get_list(self, **params):
-        return self.client.req(requests.get, self.api_endpoint(), self.api_name,
-                               params=params)
+        return self.client.req(
+            requests.get, self.api_endpoint(), self.wrapper_name,
+            params=params)
 
 
 class FreshDeskContacts(FreshDeskObjects):
     """ http://freshdesk.com/api#user
     """
     api_name = 'contact'
+    wrapper_name = 'user'
 
     # Status names (default is state=verified)
     DELETED    = 'deleted'
@@ -56,6 +61,7 @@ class FreshDeskCustomers(FreshDeskObjects):
     """ http://freshdesk.com/api#companies
     """
     api_name = 'customer'
+    wrapper_name = api_name
 
     def create(self, name):
         super(FreshDeskContacts, self).create(name=name)
@@ -72,10 +78,10 @@ class FreshDeskClient(object):
 
     """
     class APIError(Exception):
-        def __init__(resp):
+        def __init__(self, resp):
             self.resp = resp
-        def __str__(resp):
-            return 'HTTP {}: {}'.format(resp.status_code, resp.text)
+        def __str__(self):
+            return 'HTTP {}: {}'.format(self.resp.status_code, self.resp.text)
 
     def __init__(self, url, key):
         """
@@ -108,7 +114,12 @@ class FreshDeskClient(object):
             **req_attrs)
         self.last_resp = resp
         if resp.ok:
-                return resp.json()
+            parsed = resp.json()
+            if func == requests.delete:
+                return parsed
+            else:
+                # Just unwrap {'res_type': {...}} -> {...}
+                return [i[resource_type] for i in parsed]
 
         else:
             raise self.APIError(resp)
