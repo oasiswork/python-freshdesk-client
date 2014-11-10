@@ -141,9 +141,12 @@ class FreshDeskClient(object):
             if func in (requests.delete, requests.put):
                 return resp.text
             else:
-                # Just unwrap {'res_type': {...}} -> {...}
-                return [i[resource_type] for i in resp.json()]
-
+                # Either we get a list or a single object
+                json_obj = resp.json()
+                if isinstance(json_obj, (list, tuple)):
+                    return [i[resource_type] for i in json_obj]
+                else:
+                    return json_obj[resource_type]
         else:
             raise self.APIError(resp)
 
