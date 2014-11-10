@@ -59,7 +59,7 @@ class FreshDeskContacts(FreshDeskObjects):
     UNVERIFIED = 'unverified'
 
     def create(self, name, email, **kwargs):
-        super(FreshDeskContacts, self).create(name=name, email=email, **kwargs)
+        return super(FreshDeskContacts, self).create(name=name, email=email, **kwargs)
 
     def create_or_enable(self, name, email, **kwargs):
         """ If creation fails because user exists in deleted state, restore it.
@@ -87,7 +87,7 @@ class FreshDeskCustomers(FreshDeskObjects):
     wrapper_name = api_name
 
     def create(self, name, **kwargs):
-        super(FreshDeskContacts, self).create(name=name, **kwargs)
+        return super(FreshDeskCustomers, self).create(name=name, **kwargs)
 
 
 class FreshDeskClient(object):
