@@ -74,8 +74,13 @@ class FreshDeskContacts(FreshDeskObjects):
                 state='deleted', query='email is {}'.format(email))
             if ((len(contacts) > 0) and
                 (e.resp.status_code == HTTP_ALREADY_EXISTS)):
-                return self.update(contacts[0]['id'], name=name, deleted=False,
-                                   **kwargs)
+                contact = contacts[0]
+                self.update(contact['id'], name=name, deleted=False, **kwargs)
+                # update local version as well
+                contact[name] = name
+                contact.update(kwargs)
+
+                return contact
             else:
                 raise
 
