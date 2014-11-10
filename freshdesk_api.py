@@ -40,10 +40,27 @@ class FreshDeskObjects(object):
             requests.get, self.api_endpoint(id), self.wrapper_name,
             id=id)
 
-    def get_list(self, **params):
-        return self.client.req(
-            requests.get, self.api_endpoint(), self.wrapper_name,
-            params=params)
+    def get_list(self, remove_pagination=False, **params):
+        """
+        :type  remove_pagination boolean
+        :param remove_pagination if True, will fetch all pages and present
+                                 result as a single list (use with caution)
+        :rtype                   a list of dicts
+        """
+        full_list = []
+        page = 1
+        while True:
+            resp = self.client.req(
+                requests.get, self.api_endpoint(), self.wrapper_name,
+                params=params)
+            full_list += resp
+            if len(resp) <= 0 or not remove_pagination:
+                break
+            else:
+                page += 1
+                params['page'] = page
+
+        return full_list
 
 
 class FreshDeskContacts(FreshDeskObjects):
