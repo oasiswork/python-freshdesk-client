@@ -8,7 +8,7 @@ README = file(os.path.join(
     'README.md')).read()
 
 setup(name='python-freshdesk-client',
-      version='0.1',
+      version='0.1.1',
       description='Wrapper arround freshdesk REST API',
       long_description=README,
       author='Jocelyn Delalande',
