@@ -85,7 +85,7 @@ class FreshDeskContacts(FreshDeskObjects):
         is with a deleted user.
         """
         try:
-            return self.create(name=name, email=email)
+            return self.create(name=name, email=email, **kwargs)
         except FreshDeskClient.APIError as e:
             contacts = self.get_list(
                 state='deleted', query='email is {}'.format(email))
