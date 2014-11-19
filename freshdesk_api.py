@@ -101,6 +101,24 @@ class FreshDeskContacts(FreshDeskObjects):
             else:
                 raise
 
+    def get_or_create(self, name, email, **kwargs):
+        """ Try to get the contact by email, and creates it if it do not exist.
+
+        :returns a boolean (true if created) and the object dict itself
+        """
+        try:
+            obj = self.create_or_enable(name, email, **kwargs)
+            created = True
+        except FreshDeskClient.APIError as e:
+            if e.resp.status_code == HTTP_ALREADY_EXISTS:
+                contacts = self.get_list(
+                    state='all', query='email is {}'.format(email))
+                obj = contacts[0]
+                created = False
+            else:
+                raise
+        return created, obj
+
 
 class FreshDeskCustomers(FreshDeskObjects):
     """ http://freshdesk.com/api#companies
