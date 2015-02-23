@@ -37,8 +37,7 @@ class FreshDeskObjects(object):
 
     def get(self, id):
         return self.client.req(
-            requests.get, self.api_endpoint(id), self.wrapper_name,
-            id=id)
+            requests.get, self.api_endpoint(id), self.wrapper_name)
 
     def get_list(self, remove_pagination=False, **params):
         """
