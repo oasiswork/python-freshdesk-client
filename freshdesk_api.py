@@ -190,3 +190,23 @@ class FreshDeskClient(object):
         else:
             raise self.APIError(resp)
 
+
+class FreshDeskSolutionArticle(FreshDeskObjects):
+    """ http://freshdesk.com/api#solution_article_attributes
+    """
+    api_name = 'article'
+    wrapper_name = 'solution_article' 
+
+    # id is a dict with follwing keys : category, folder, [article]
+    def api_endpoint(self, id):
+        """
+        :param id :dic
+        """
+        if api_name in id and 'folder' in id and 'category' in id:
+            return '/solution/categories/{}/folders/{}/articles/{}s.json'.format(id['category'], id['folder'], api_name)
+        # No article id means all articles
+        elif 'folder' in id and 'category' in id:
+            return '/solution/categories/{}/folders/{}.json'.format(id['category'], id['folder'])
+
+    def create(self, id, **kwargs):
+        return self.client.req(requests.post, self.api_endpoint(id), self.wrapper_name, **kwargs)
