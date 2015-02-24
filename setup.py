@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 import os
 
 try:
-    README = file(os.path.join(
+    README = open(os.path.join(
         os.path.dirname(__file__),
         'README.md')).read()
 except IOError:
