@@ -189,20 +189,49 @@ class FreshDeskClient(object):
         else:
             raise self.APIError(resp)
 
-
-class FreshDeskSolutionArticle(FreshDeskObjects):
-    """ http://freshdesk.com/api#solution_article_attributes
-    """
-    api_name = 'article'
-    wrapper_name = 'solution_article' 
+class FreshDeskSolutionFolder(FreshDeskObjects):
+    api_name = 'folder'
+    wrapper_name = api_name 
 
     # id is a dict with follwing keys : category, folder, [article]
     def api_endpoint(self, id):
         """
         :param id :dic
         """
-        if api_name in id and 'folder' in id and 'category' in id:
-            return '/solution/categories/{}/folders/{}/articles/{}s.json'.format(id['category'], id['folder'], api_name)
+        if self.api_name in id and 'category' in id:
+            return '/solution/categories/{}/{}s/{}.json'.format(id['category'], self.api_name, id[self.api_name])
+        # No article id means all articles
+        elif 'folder' in id and 'category' in id:
+            return '/solution/categories/{}/{}.json'.format(id['category'])
+
+
+class FreshDeskSolutionCategory(FreshDeskObjects):
+    wrapper_name = 'category'
+
+    def api_endpoint(self, id=None):
+        """
+        :param id :integer
+        """
+
+        if id:
+            return '/solution/categories/{}.json'.format(id)
+        else:
+            return '/solution/categories.json'
+
+
+class FreshDeskSolutionArticle(FreshDeskObjects):
+    """ http://freshdesk.com/api#solution_article_attributes
+    """
+    api_name = 'article'
+    wrapper_name = api_name 
+
+    # id is a dict with follwing keys : category, folder, [article]
+    def api_endpoint(self, id):
+        """
+        :param id :dic
+        """
+        if self.api_name in id and 'folder' in id and 'category' in id:
+            return '/solution/categories/{}/folders/{}/{}s/{}.json'.format(id['category'], id['folder'], self.api_name, id[self.api_name])
         # No article id means all articles
         elif 'folder' in id and 'category' in id:
             return '/solution/categories/{}/folders/{}.json'.format(id['category'], id['folder'])
