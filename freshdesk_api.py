@@ -166,7 +166,9 @@ class FreshDeskClient(object):
 
         if func in (requests.patch, requests.put, requests.post):
             req_attrs = {
-                'data': json.dumps({resource_type: kwargs}),
+                'data': json.dumps(kwargs),
+                # Why define a resource type ?
+                #'data': json.dumps({resource_type: kwargs}),
                 'headers': {'Content-Type': 'application/json'}
             }
         else:
@@ -226,7 +228,7 @@ class FreshDeskSolutionArticle(FreshDeskObjects):
     """ http://freshdesk.com/api#solution_article_attributes
     """
     api_name = 'article'
-    wrapper_name = api_name 
+    wrapper_name = 'solution_article'
 
     # id is a dict with follwing keys : category, folder, [article]
     def api_endpoint(self, id):
