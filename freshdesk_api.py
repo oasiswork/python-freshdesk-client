@@ -244,21 +244,6 @@ class FreshDeskSolutionArticles(FreshDeskObjects):
     wrapper_name = solution_article
     url_prefix = 'solution/categories/{}/folders/{}'
 
-    # id is a dict with follwing keys : category, folder, [article]
-    #def api_endpoint(self, id):
-    #    """
-    #    :param id :dic
-    #    """
-    #    if self.api_name in id and 'folder' in id and 'category' in id:
-    #        return '/solution/categories/{}/folders/{}/{}s/{}.json'.format(id['category'], id['folder'], self.api_name, id[self.api_name])
-    #    # No article id means all articles
-    #    elif 'folder' in id and 'category' in id:
-    #        return '/solution/categories/{}/folders/{}.json'.format(id['category'], id['folder'])
-#
-#    def create(self, id, **kwargs):
-#        return self.client.req(requests.post, self.api_endpoint(id), self.wrapper_name, **kwargs)
-
-
     def create(self, category_id, folder_id, **kwargs):
         return super(FreshDeskSolutionArticles, self).create(prefix=self.url_prefix.format(category_id, folder_id), **kwargs)
 
