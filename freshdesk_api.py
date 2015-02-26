@@ -259,10 +259,10 @@ class FreshDeskSolutionArticles(FreshDeskObjects):
         return super(FreshDeskSolutionArticles, self).create(prefix=self.url_prefix.format(category_id, folder_id), **kwargs)
 
     def update(self, category_id, folder_id, id, **kwargs):
-        return super(FreshDeskSolutionArticles, self).update(prefix=self.url_prefix.format(category_id, folder_id), **kwargs)
+        return super(FreshDeskSolutionArticles, self).update(prefix=self.url_prefix.format(category_id, folder_id), id=id, **kwargs)
 
     def delete(self, category_id, folder_id, id):
-        return super(FreshDeskSolutionArticles, self).delete(prefix=self.url_prefix.format(category_id, folder_id))
+        return super(FreshDeskSolutionArticles, self).delete(prefix=self.url_prefix.format(category_id, folder_id), id=id)
 
     def get(self, category_id, folder_id, id):
         return super(FreshDeskSolutionArticles, self).get(prefix=self.url_prefix.format(category_id, folder_id), id=id)
