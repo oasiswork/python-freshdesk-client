@@ -241,7 +241,7 @@ class FreshDeskSolutionArticles(FreshDeskObjects):
     """ http://freshdesk.com/api#solution-article
     """
     api_name = 'articles'
-    wrapper_name = solution_article
+    wrapper_name = 'solution_article'
     url_prefix = 'solution/categories/{}/folders/{}'
 
     def create(self, category_id, folder_id, **kwargs):
@@ -254,4 +254,4 @@ class FreshDeskSolutionArticles(FreshDeskObjects):
         return super(FreshDeskSolutionArticles, self).delete(prefix=self.url_prefix.format(category_id, folder_id))
 
     def get(self, category_id, folder_id, id):
-        return super(FreshDeskSolutionArticles, self).get(prefix=self.url_prefix.format(category_id, folder_id))
+        return super(FreshDeskSolutionArticles, self).get(prefix=self.url_prefix.format(category_id, folder_id), id=id)
