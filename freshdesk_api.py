@@ -191,9 +191,20 @@ class FreshDeskClient(object):
                 # Either we get a list or a single object
                 json_obj = resp.json()
                 if isinstance(json_obj, (list, tuple)):
-                    return [i[resource_type] for i in json_obj]
+                    try:
+                        return [i[resource_type] for i in json_obj]
+                    # Freshdesk doesn't return same resource_type as the one
+                    # we pushed him (exemple : we push "solution_category", he 
+                    # returns "category")
+                    except KeyError:
+                        resource_type = resource_type.split('_')[1]
+                        return [i[resource_type] for i in json_obj]
                 else:
-                    return json_obj[resource_type]
+                    try:
+                        return json_obj[resource_type]
+                    except KeyError:
+                        resource_type = resource_type.split('_')[1]
+                        return json_obj[resource_type]
         else:
             raise self.APIError(resp)
 
