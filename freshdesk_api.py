@@ -169,8 +169,6 @@ class FreshDeskClient(object):
 
         if func in (requests.patch, requests.put, requests.post):
             req_attrs = {
-                #'data': json.dumps(kwargs),
-                # Why define a resource type ?
                 'data': json.dumps({resource_type: kwargs}),
                 'headers': {'Content-Type': 'application/json'}
             }
@@ -259,10 +257,10 @@ class FreshDeskSolutionArticles(FreshDeskObjects):
         return super(FreshDeskSolutionArticles, self).create(prefix=self.url_prefix.format(category_id, folder_id), **kwargs)
 
     def update(self, category_id, folder_id, id, **kwargs):
-        return super(FreshDeskSolutionArticles, self).update(prefix=self.url_prefix.format(category_id, folder_id), id=id, **kwargs)
+        return super(FreshDeskSolutionArticles, self).update(id=id, prefix=self.url_prefix.format(category_id, folder_id), **kwargs)
 
     def delete(self, category_id, folder_id, id):
-        return super(FreshDeskSolutionArticles, self).delete(prefix=self.url_prefix.format(category_id, folder_id), id=id)
+        return super(FreshDeskSolutionArticles, self).delete(id=id, prefix=self.url_prefix.format(category_id, folder_id))
 
     def get(self, category_id, folder_id, id):
-        return super(FreshDeskSolutionArticles, self).get(prefix=self.url_prefix.format(category_id, folder_id), id=id)
+        return super(FreshDeskSolutionArticles, self).get(id=id, prefix=self.url_prefix.format(category_id, folder_id), id=id)
