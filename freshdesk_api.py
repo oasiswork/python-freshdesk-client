@@ -169,8 +169,6 @@ class FreshDeskClient(object):
 
         if func in (requests.patch, requests.put, requests.post):
             req_attrs = {
-                #'data': json.dumps(kwargs),
-                # Why define a resource type ?
                 'data': json.dumps({resource_type: kwargs}),
                 'headers': {'Content-Type': 'application/json'}
             }
@@ -206,6 +204,7 @@ class FreshDeskClient(object):
                         resource_type = resource_type.split('_')[1]
                         return json_obj[resource_type]
         else:
+            print('DEBUG', path)
             raise self.APIError(resp)
 
 class FreshDeskSolutionCategories(FreshDeskObjects):
@@ -235,17 +234,17 @@ class FreshDeskSolutionFolders(FreshDeskObjects):
     wrapper_name = 'solution_folder'
     url_prefix = 'solution/categories/{}'
 
-    def create(self, category_id, **kwargs):
-        return super(FreshDeskSolutionFolders, self).create(prefix=self.url_prefix.format(category_id), **kwargs)
+    def create(self, category, **kwargs):
+        return super(FreshDeskSolutionFolders, self).create(prefix=self.url_prefix.format(category), **kwargs)
 
-    def update(self, category_id, id, **kwargs):
-        return super(FreshDeskSolutionFolders, self).update(id=id, prefix=self.url_prefix.format(category_id), **kwargs)
+    def update(self, category, id, **kwargs):
+        return super(FreshDeskSolutionFolders, self).update(id=id, prefix=self.url_prefix.format(category), **kwargs)
 
-    def delete(self, category_id, id):
-        return super(FreshDeskSolutionFolders, self).delete(id=id, prefix=self.url_prefix.format(category_id))
+    def delete(self, category, id):
+        return super(FreshDeskSolutionFolders, self).delete(id=id, prefix=self.url_prefix.format(category))
 
-    def get(self, category_id, id):
-        return super(FreshDeskSolutionFolders, self).get(id=id, prefix=self.url_prefix.format(category_id))
+    def get(self, category, id):
+        return super(FreshDeskSolutionFolders, self).get(id=id, prefix=self.url_prefix.format(category))
 
 
 class FreshDeskSolutionArticles(FreshDeskObjects):
@@ -255,14 +254,14 @@ class FreshDeskSolutionArticles(FreshDeskObjects):
     wrapper_name = 'solution_article'
     url_prefix = 'solution/categories/{}/folders/{}'
 
-    def create(self, category_id, folder_id, **kwargs):
-        return super(FreshDeskSolutionArticles, self).create(prefix=self.url_prefix.format(category_id, folder_id), **kwargs)
+    def create(self, category, folder, **kwargs):
+        return super(FreshDeskSolutionArticles, self).create(prefix=self.url_prefix.format(category, folder), **kwargs)
 
-    def update(self, category_id, folder_id, id, **kwargs):
-        return super(FreshDeskSolutionArticles, self).update(prefix=self.url_prefix.format(category_id, folder_id), id=id, **kwargs)
+    def update(self, category, folder, id, **kwargs):
+        return super(FreshDeskSolutionArticles, self).update(prefix=self.url_prefix.format(category, folder), id=id, **kwargs)
 
-    def delete(self, category_id, folder_id, id):
-        return super(FreshDeskSolutionArticles, self).delete(prefix=self.url_prefix.format(category_id, folder_id), id=id)
+    def delete(self, category, folder, id):
+        return super(FreshDeskSolutionArticles, self).delete(prefix=self.url_prefix.format(category, folder), id=id)
 
-    def get(self, category_id, folder_id, id):
-        return super(FreshDeskSolutionArticles, self).get(prefix=self.url_prefix.format(category_id, folder_id), id=id)
+    def get(self, category, folder, id):
+        return super(FreshDeskSolutionArticles, self).get(prefix=self.url_prefix.format(category, folder), id=id)
