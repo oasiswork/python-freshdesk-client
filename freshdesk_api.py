@@ -264,4 +264,4 @@ class FreshDeskSolutionArticles(FreshDeskObjects):
         return super(FreshDeskSolutionArticles, self).delete(id=id, prefix=self.url_prefix.format(category, folder))
 
     def get(self, category, folder, id):
-        return super(FreshDeskSolutionArticles, self).get(id=id, prefix=self.url_prefix.format(category, folder), id=id)
+        return super(FreshDeskSolutionArticles, self).get(id=id, prefix=self.url_prefix.format(category, folder))
