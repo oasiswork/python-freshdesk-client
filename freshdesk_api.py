@@ -183,26 +183,31 @@ class FreshDeskClient(object):
         self.last_resp = resp
         if resp.ok:
             # for those two types of requests, the output is empty
-            if func in (requests.delete, requests.put):
-                return resp.text
-            else:
+#            if func in (requests.delete, requests.put):
+#                return resp.text
+#            else:
+            # test if response is json, otherwise return text
+            try:
                 # Either we get a list or a single object
                 json_obj = resp.json()
-                if isinstance(json_obj, (list, tuple)):
-                    try:
-                        return [i[resource_type] for i in json_obj]
-                    # Freshdesk doesn't return same resource_type as the one
-                    # we pushed him (exemple : we push "solution_category", he 
-                    # returns "category")
-                    except KeyError:
-                        resource_type = resource_type.split('_')[1]
-                        return [i[resource_type] for i in json_obj]
-                else:
-                    try:
-                        return json_obj[resource_type]
-                    except KeyError:
-                        resource_type = resource_type.split('_')[1]
-                        return json_obj[resource_type]
+            except ValueError:
+                return resp.text
+
+            if isinstance(json_obj, (list, tuple)):
+                try:
+                    return [i[resource_type] for i in json_obj]
+                # Freshdesk doesn't return same resource_type as the one
+                # we pushed him (exemple : we push "solution_category",
+                # it returns "category")
+                except KeyError:
+                    resource_type = resource_type.split('_')[1]
+                    return [i[resource_type] for i in json_obj]
+            else:
+                try:
+                    return json_obj[resource_type]
+                except KeyError:
+                    resource_type = resource_type.split('_')[1]
+                    return json_obj[resource_type]
         else:
             print('DEBUG', path)
             raise self.APIError(resp)
