@@ -157,6 +157,7 @@ class FreshDeskClient(object):
         # Resources types
         self.customers = FreshDeskCustomers(self)
         self.contacts = FreshDeskContacts(self)
+        self.users = FreshDeskUsers(self)
 
     def req(self, func, path, resource_type, params={}, **kwargs):
         abs_url = urlparse.urljoin(self.url, path)
