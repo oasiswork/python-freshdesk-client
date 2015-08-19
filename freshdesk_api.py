@@ -209,3 +209,13 @@ class FreshDeskSolutionArticle(FreshDeskObjects):
 
     def create(self, id, **kwargs):
         return self.client.req(requests.post, self.api_endpoint(id), self.wrapper_name, **kwargs)
+
+class FreshDeskTickets(FreshDeskObjects):
+    api_name = 'ticket'
+    wrapper_name = 'helpdesk_ticket'
+
+    def api_endpoint(self, id=None):
+        if id:
+            return '/helpdesk/{}s/{}.json'.format(self.api_name, id)
+        else:
+            return '/helpdesk/{}s.json'.format(self.api_name)
