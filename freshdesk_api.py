@@ -209,3 +209,10 @@ class FreshDeskSolutionArticle(FreshDeskObjects):
 
     def create(self, id, **kwargs):
         return self.client.req(requests.post, self.api_endpoint(id), self.wrapper_name, **kwargs)
+
+class FreshDeskUsers(FreshDeskObjects):
+    """ http://freshdesk.com/api#user_attributes
+    """
+
+    api_name = 'contacts'
+    wrapper_name = 'user'
