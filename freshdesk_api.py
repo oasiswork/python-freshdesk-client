@@ -215,5 +215,5 @@ class FreshDeskUsers(FreshDeskObjects):
     """ http://freshdesk.com/api#user_attributes
     """
 
-    api_name = 'contacts'
+    api_name = 'contact'
     wrapper_name = 'user'
