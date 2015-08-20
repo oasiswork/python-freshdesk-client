@@ -35,7 +35,7 @@ class FreshDeskObjects(object):
         return self.client.req(
             requests.delete, self.api_endpoint(id), self.wrapper_name)
 
-    def get(self, id, args=None):
+    def get(self, id=None, args=None):
         if args:
             return self.client.req(
                 requests.get, self.api_endpoint(id, args), self.wrapper_name)
