@@ -219,8 +219,25 @@ class FreshDeskTickets(FreshDeskObjects):
     api_name = 'ticket'
     wrapper_name = 'helpdesk_ticket'
 
-    def api_endpoint(self, id=None):
+    def convert_args_from_dic(self, args):
+        """
+        :param args :dic
+
+        :returns a string like company_id=14654687&filter_name=all_tickets
+        """
+        text_args = '?'
+        for key, value in args.items():
+            text_args = text_args+str(key)+'='+str(value)+'&'
+        return text_args[:-1]
+
+    def api_endpoint(self, id=None, args=None):
         if id:
             return '/helpdesk/{}s/{}.json'.format(self.api_name, id)
         else:
-            return '/helpdesk/{}s.json'.format(self.api_name)
+            if args:
+                # Add search params in the end of the URL
+                text_args = self.convert_args_from_dic(args)
+                return '/helpdesk/{}s.json{}'.format(self.api_name, text_args)
+            else:
+                return '/helpdesk/{}s.json'.format(self.api_name)
+
